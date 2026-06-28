@@ -47,9 +47,23 @@ impl Chip8 {
 
         chip8
     }
+
+    fn load_rom(&mut self, pfad: &str) -> std::io::Result<()> {
+        let rom = std::fs::read(pfad)?;
+
+        let start = 0x200;
+        self.memory[start..start + rom.len()].copy_from_slice(&rom);
+
+        Ok(())
+    }
 }
 
 fn main() {
-    let chip8 = Chip8::new();
+    let mut chip8 = Chip8::new();
     println!("PC-Startwert: {}", chip8.pc);
+
+    chip8.load_rom("2-ibm-logo.ch8").expect("ROM konnte nicht geladen werden");
+
+    println!("Erstes ROM-Byte an 0x200: {:02X?}", &chip8.memory[0x200..0x202]);
+
 }
